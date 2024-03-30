@@ -1,24 +1,17 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { FontLoader } from 'three/addons/loaders/FontLoader.js';
-import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
-// let width = window.innerWidth
-// let height = window.innerHeight
-// const size = 256
-//const container = document.querySelector('#threejs-container')
 const canvas = document.createElement('canvas'),
 ctx = canvas.getContext('2d')
-function changeCanvas() {
-	ctx.font = '20pt Arial'
+function changeCanvas(text) {
+	ctx.font = '16pt Tahoma'
 	ctx.fillStyle = 'white'
 	ctx.fillRect(0, 0, canvas.width, canvas.height)
 	ctx.fillStyle = 'black'
 	ctx.textAlign = 'center'
 	ctx.textBaseline = 'middle'
-	const text = 'Do you want your \ndrink in plastic cup \nor reusable cup?';
 	const lines = text.split('\n');
-	const lineHeight = 30; // Adjust this value to set the spacing between lines
+	const lineHeight = 20; // Adjust this value to set the spacing between lines
 	lines.forEach((line, index) => {
 		ctx.fillText(line, canvas.width / 2, canvas.height / 2 - (lines.length - 1) / 2 * lineHeight + index * lineHeight);
 	});
@@ -184,17 +177,25 @@ var scene2 = new THREE.Scene();
 var scene = coffee_scene;
 
 // Create a simple box geometry for the button
-const buttonGeometry = new THREE.BoxGeometry(10, 2, 5);
+const buttonGeometry = new THREE.BoxGeometry(4, 2, 4);
 const buttonMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const buttonMesh = new THREE.Mesh(buttonGeometry, buttonMaterial);
-buttonMesh.position.set(0, 1, -3); // Position it in front of the camera
+buttonMesh.position.set(14, -8, 0); // Position it in front of the camera
 scene.add(buttonMesh);
+
+const buttonGeometry1 = new THREE.BoxGeometry(4, 2, 4);
+const buttonMaterial1 = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+const buttonMesh1 = new THREE.Mesh(buttonGeometry1, buttonMaterial1);
+buttonMesh1.position.set(14, -8, 10); // Position it in front of the camera
+scene.add(buttonMesh1);
 
 // Raycaster for detecting clicks on the button
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
-var clicked = false;
+var green_clicked = false;
+var red_clicked = false;
+let redButtonClickedCount = 0;
 
 function onMouseClick(event) {
     // Calculate mouse position in normalized device coordinates
@@ -206,11 +207,15 @@ function onMouseClick(event) {
     raycaster.setFromCamera(mouse, camera);
 
     // Calculate objects intersecting the picking ray
-    const intersects = raycaster.intersectObjects([buttonMesh]);
+    const intersects = raycaster.intersectObjects([buttonMesh, buttonMesh1]);
 
     if (intersects.length > 0) {
-        // Button was clicked
-        clicked = true;
+        const intersectedObject = intersects[0].object;
+		if (intersectedObject == buttonMesh) {
+			green_clicked = true;
+		} else if (intersectedObject == buttonMesh1) {
+			red_clicked = true;
+		}
     }
 }
 
@@ -218,21 +223,41 @@ function handleButtonClick() {
     // Button click logic goes here
     console.log("Button clicked!");
 	renderer.render(scene2, camera);
-	clicked = false;
-	return;
+	window.location.href = 'game.html';
+	green_clicked = false;
+}
+
+let text = 'Do you want your drink in\nplastic cup or reusable cup?\n\nPress green button\nfor reusable cup.';
+
+let game_end = false;
+
+function handleButtonClickRed() {
+	console.log("red button clicked!");
+	if (redButtonClickedCount == 0) {
+		text = "oh.... you sure?\n almost 1.5 billion plastic \nbottles per day!\n\nif you changed your mind, \npress green button";
+	} else {
+		text = "great job! \nyou just contributed to \nglobal warming"
+		game_end = true;
+	}
+	redButtonClickedCount++
+	red_clicked = false;
 }
 
 function animate() {
 	requestAnimationFrame( animate );
-	changeCanvas()
 	texture.needsUpdate = true
     controls.update();
-	renderer.render( coffee_scene, camera );
 	window.addEventListener('click', onMouseClick, false);
-	if (clicked) {
+	if (green_clicked) {
 		handleButtonClick();
-		return;
+	} else if (red_clicked) {
+		handleButtonClickRed();
 	}
+	changeCanvas(text)
+	if (game_end) {
+		window.location.href = "final.html";
+	}
+	renderer.render( coffee_scene, camera );
 }
 
 animate();
