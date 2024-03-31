@@ -166,7 +166,7 @@ person.position.z = 25;
 person.rotation.y = Math.PI / 2;
 coffee_scene.add(person);
 
-renderer.setClearColor(0xffffff); // Set background color to black
+renderer.setClearColor(0xffffff); // Set background color to white
 
 const ambientLight = new THREE.AmbientLight(0xfcfafa); // Soft white light
 coffee_scene.add(ambientLight);
