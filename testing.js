@@ -168,20 +168,18 @@ const controls = new OrbitControls( camera, renderer.domElement );
 camera.position.set(-125,0,0)
 controls.update();
 
-// Create a simple box geometry for the button
 const buttonGeometry = new THREE.BoxGeometry(4, 2, 4);
 const buttonMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const buttonMesh = new THREE.Mesh(buttonGeometry, buttonMaterial);
-buttonMesh.position.set(14, -8, 0); // Position it in front of the camera
+buttonMesh.position.set(14, -8, 0);
 coffee_scene.add(buttonMesh);
 
 const buttonGeometry1 = new THREE.BoxGeometry(4, 2, 4);
 const buttonMaterial1 = new THREE.MeshBasicMaterial({ color: 0xff0000 });
 const buttonMesh1 = new THREE.Mesh(buttonGeometry1, buttonMaterial1);
-buttonMesh1.position.set(14, -8, 10); // Position it in front of the camera
+buttonMesh1.position.set(14, -8, 10);
 coffee_scene.add(buttonMesh1);
 
-// Raycaster for detecting clicks on the button
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
@@ -190,38 +188,29 @@ var red_clicked = false;
 let redButtonClickedCount = 0;
 
 function onMouseClick(event) {
-    // Calculate mouse position in normalized device coordinates
-    // (-1 to +1) for both components
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-    // Update the picking ray with the camera and mouse position
     raycaster.setFromCamera(mouse, camera);
 
-    // Calculate objects intersecting the picking ray
     const intersects = raycaster.intersectObjects([buttonMesh, buttonMesh1]);
 
     if (intersects.length > 0) {
         const intersectedObject = intersects[0].object;
-		if (intersectedObject == buttonMesh) {
-			green_clicked = true;
-		} else if (intersectedObject == buttonMesh1) {
-			red_clicked = true;
-		}
+      if (intersectedObject == buttonMesh) {
+        green_clicked = true;
+      } else if (intersectedObject == buttonMesh1) {
+        red_clicked = true;
+      }
     }
 }
 
 function handleButtonClick() {
-    // Button click logic goes here
-    console.log("Button clicked!");
-	//renderer.render(scene2, camera);
-
 	window.location.href = 'game.html';
 	green_clicked = false;
 }
 
 function handleButtonClickRed() {
-	console.log("red button clicked!");
 	if (redButtonClickedCount == 0) {
 		text = "oh.... you sure?\n almost 1.5 billion plastic \nbottles per day!\n\nif you changed your mind, \npress green button";
 	} else if (redButtonClickedCount == 1) {
