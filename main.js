@@ -1,6 +1,19 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
+let text = 'Do you want your drink in\nplastic cup or reusable cup?\n\nPress green button\nfor reusable cup.';
+
+const urlParams = new URLSearchParams(window.location.search);
+let errorMessage = urlParams.get('state');
+let game_end = false;
+console.log(errorMessage);
+if (errorMessage == 'timeout') {
+	text = "Great Job! You successfully\nearned the reusuable cup";
+	game_end = true;
+} else if (errorMessage == 'collied') {
+	text = "Oh no! Play the game again\nto earn the reusuable cup";
+}
+
 const canvas = document.createElement('canvas'),
 ctx = canvas.getContext('2d')
 function changeCanvas(text) {
@@ -153,7 +166,6 @@ person.position.z = 25;
 person.rotation.y = Math.PI / 2;
 coffee_scene.add(person);
 
-
 renderer.setClearColor(0xffffff); // Set background color to black
 
 const ambientLight = new THREE.AmbientLight(0xfcfafa); // Soft white light
@@ -171,8 +183,6 @@ const controls = new OrbitControls( camera, renderer.domElement );
 
 camera.position.z = 100;
 controls.update();
-
-var scene2 = new THREE.Scene();
 
 var scene = coffee_scene;
 
@@ -222,22 +232,22 @@ function onMouseClick(event) {
 function handleButtonClick() {
     // Button click logic goes here
     console.log("Button clicked!");
-	renderer.render(scene2, camera);
+	//renderer.render(scene2, camera);
+
 	window.location.href = 'game.html';
 	green_clicked = false;
 }
-
-let text = 'Do you want your drink in\nplastic cup or reusable cup?\n\nPress green button\nfor reusable cup.';
-
-let game_end = false;
 
 function handleButtonClickRed() {
 	console.log("red button clicked!");
 	if (redButtonClickedCount == 0) {
 		text = "oh.... you sure?\n almost 1.5 billion plastic \nbottles per day!\n\nif you changed your mind, \npress green button";
-	} else {
+	} else if (redButtonClickedCount == 1) {
 		text = "great job! \nyou just contributed to \nglobal warming"
 		game_end = true;
+	} else {
+		game_end = true;
+		window.location.href = "final.html";
 	}
 	redButtonClickedCount++
 	red_clicked = false;
@@ -255,7 +265,9 @@ function animate() {
 	}
 	changeCanvas(text)
 	if (game_end) {
-		window.location.href = "final.html";
+		setTimeout(function() {
+			window.location.href = 'final.html';
+		}, 5000); // 5000 milliseconds = 5 seconds
 	}
 	renderer.render( coffee_scene, camera );
 }

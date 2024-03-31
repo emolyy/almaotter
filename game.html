@@ -101,7 +101,7 @@
 	  update(ground) {
 		this.updateSides()
   
-		if (this.zAcceleration) this.velocity.z += 0.0003
+		if (this.zAcceleration) this.velocity.z += 0.0012
   
 		this.position.x += this.velocity.x
 		this.position.z += this.velocity.z
@@ -204,9 +204,9 @@
 		case 'KeyW':
 		  keys.w.pressed = true
 		  break
-		case 'Space':
-		  cube.velocity.y = 0.08
-		  break
+		// case 'Space':
+		//   cube.velocity.y = 0.08
+		//   break
 	  }
 	})
   
@@ -229,8 +229,8 @@
   
 	const enemies = []
 	let frames = 0
-	let spawnRate = 300
-	const duration = 5000; // 5 seconds in milliseconds
+	let spawnRate = 400
+	const duration = 5000; // 30 seconds in milliseconds
 	let animationId;
 	function animate() {
 	  animationId = requestAnimationFrame(animate)
@@ -247,13 +247,16 @@
 	  cube.update(ground)
 	  enemies.forEach((enemy) => {
 		enemy.update(ground)
+		// if the block collied w an enemy
 		if (
 		  boxCollision({
 			box1: cube,
 			box2: enemy
 		  })
 		) {
+			// stop the animation
 		  cancelAnimationFrame(animationId)
+		  window.location.href = 'index.html?state=collied';
 		}
 	  })
   
@@ -293,10 +296,9 @@
 	const startTime = performance.now();
 	animate()
 	setTimeout(() => {
-  cancelAnimationFrame(animationId);
+		window.location.href = 'index.html?state=timeout';
+		cancelAnimationFrame(animationId);
 }, duration);
-
-
 
   </script>
   
