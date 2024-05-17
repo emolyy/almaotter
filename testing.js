@@ -255,7 +255,6 @@ class BasicCharacterControllerProxy {
   }
 };
 
-
 class BasicCharacterController {
   constructor(params) {
     this._Init(params);
