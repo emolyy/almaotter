@@ -323,7 +323,7 @@ class BasicCharacterController {
 
       const loader = new FBXLoader(this._manager);
       loader.setPath('./resources/zombie/');
-      loader.load('walking.fbx', (a) => { _OnLsoad('walk', a); });
+      loader.load('walking.fbx', (a) => { _OnLoad('walk', a); });
       loader.load('running.fbx', (a) => { _OnLoad('run', a); });
       loader.load('idle.fbx', (a) => { _OnLoad('idle', a); });
       loader.load('dance.fbx', (a) => { _OnLoad('dance', a); });
